@@ -64,7 +64,7 @@ def get_categories(year, month):
     """, (start.timestamp(), end.timestamp()))
 
     for row in result.fetchall():
-        categories.append((row[0], row[1] / 100))
+        categories.append((row[0], abs(row[1] / 100)))
 
     return categories
 

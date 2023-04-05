@@ -19,7 +19,7 @@ def lookup_category(description):
 
 # Re-categorizes all transactions as needed.
 def update_categories():
-    result = cursor.execute("SELECT rowid, description FROM `transaction`")
+    result = cursor.execute("SELECT rowid, description FROM `transaction` WHERE category_override = 0")
     all_transactions = result.fetchall()
     connection.commit()
 
