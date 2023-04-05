@@ -96,3 +96,8 @@ if len(path) > 0:
         load_omni()
     elif format == "discover":
         load_discover()
+
+# TODO:
+# - fill out all patterns
+# - budget table
+# - create webpage summary

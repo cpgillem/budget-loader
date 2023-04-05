@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <title>Budget Tracker</title>
+</head>
+<body>
+    <h1>Categories View</h1>
+    <h2>{{ month }}</h2>
+    <table>
+        <tr>
+            <th>Category</th>
+            <th>Total</th>
+        </tr>
+        {% for category in categories %}
+            <tr>
+                <td>{{ category[0] }}</td>
+                <td>{{ category[1] }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+
+    <h1>Transactions View</h1>
+    <h2>{{ month }}</h2>
+    <table>
+        <tr>
+            <th>Date</th>
+            <th>Check No.</th>
+            <th>Description</th>
+            <th>Amount</th>
+            <th>Category</th>
+        </tr>
+        {% for transaction in transactions %}
+            <tr>
+                <td>{{ transaction[0] }}</td>
+                <td>{{ transaction[1] }}</td>
+                <td>{{ transaction[2] }}</td>
+                <td>{{ transaction[3] }}</td>
+                <td>{{ transaction[4] }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>

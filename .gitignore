@@ -1,3 +1,4 @@
 data
 *.sqlite*
 .vscode
+**/__pycache__
