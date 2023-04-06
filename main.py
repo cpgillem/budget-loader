@@ -3,10 +3,16 @@ import sys
 import csv
 from datetime import datetime
 import re
+from werkzeug.security import generate_password_hash
 
 # SQLite connection
 connection = sqlite3.connect("db.sqlite3")
 cursor = connection.cursor()
+
+def reset_password(password):
+    hash = generate_password_hash(password)
+    with open("hash.txt", "w") as f:
+        f.write(hash)
 
 # Run through the regex table until a category is found. There should be a .* pattern for a default if none found.
 def lookup_category(description):
@@ -89,6 +95,10 @@ for arg in sys.argv:
         account_name = arg[10:].lower()
     elif arg == "--update-categories":
         update_categories()
+        print("Categories recalculated.")
+    elif arg.startswith("--password"):
+        reset_password(arg[11:])
+        print("Password reset.")
 
 # Load the data from the file, normalize it, and save it.
 if len(path) > 0:

@@ -1,10 +1,13 @@
 from flask import Flask
 from flask import render_template
+from flask_httpauth import HTTPBasicAuth
+from werkzeug.security import generate_password_hash, check_password_hash
 import sqlite3
 from datetime import datetime, date, time
 from dateutil import relativedelta
 
 app = Flask(__name__)
+auth = HTTPBasicAuth()
 
 # Get a database connection.
 def connect_db():
@@ -69,6 +72,7 @@ def get_categories(year, month):
     return categories
 
 @app.route("/")
+@auth.login_required
 def index():
     now = datetime.now()
 
@@ -76,5 +80,13 @@ def index():
     transactions = get_transactions(now.year, now.month)
     return render_template('index.html', month=now.month, categories=categories, transactions=transactions)
 
-# if __name__ == '__main__':
-#     app.run(host='127.0.0.1', port=5009, debug=True)
+@auth.verify_password
+def verify_password(username, password):
+    # Load the hash
+    hash = ""
+    with open("hash.txt", "r") as f:
+        hash = f.readline()
+
+    # Check the hash
+    if check_password_hash(hash, password):
+        return username
