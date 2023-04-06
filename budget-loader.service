@@ -1,0 +1,13 @@
+[Unit]
+Description=Budget
+After=network.target
+
+[Service]
+User=www-data
+Group=www-data
+WorkingDirectory=/var/budget-loader
+Environment="PATH=/var/budget-loader/venv/bin"
+ExecStart=/var/budget-loader/venv/bin/gunicorn --config gunicorn_config.py wsgi:app
+
+[Install]
+WantedBy=multi-user.target
