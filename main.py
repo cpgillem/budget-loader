@@ -108,6 +108,6 @@ if len(path) > 0:
         load_discover()
 
 # TODO:
-# - fill out all patterns
-# - budget table
-# - create webpage summary
+# - regex detection for account and format on filenames
+# - cron job to load automatically
+# - budget setting features

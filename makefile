@@ -1,5 +1,8 @@
-server_debug:
-	flask --app src/server run --debug
+activate:
+	. venv/bin/activate
 
-server:
+server_debug: activate
+	flask --app server run --debug
+
+server: activate
 	gunicorn --bind 127.0.0.1:5009 wsgi:app

@@ -13,6 +13,12 @@ auth = HTTPBasicAuth()
 def connect_db():
     return sqlite3.connect("db.sqlite3")
 
+def to_dollars(cents):
+    if cents is None:
+        return 0
+    else:
+        return cents / 100
+
 # Get start and end dates.
 def get_start_end(year, month):
     start = datetime.combine(date(year, month, 1), time(0, 0))
@@ -59,15 +65,14 @@ def get_categories(year, month):
 
     # Query and sum up categories
     result = cursor.execute("""
-        SELECT category.name, SUM(`transaction`.amount)
-        FROM `transaction`
-            JOIN category ON `transaction`.category_id = category.rowid
-        WHERE `transaction`.timestamp BETWEEN ? AND ?
+        SELECT category.name, category.budget, SUM(`transaction`.amount), COALESCE(category.budget, 0) + SUM(`transaction`.amount)
+        FROM category
+            LEFT JOIN `transaction` ON category.rowid = `transaction`.category_id AND `transaction`.timestamp BETWEEN ? AND ?
         GROUP BY category.name
     """, (start.timestamp(), end.timestamp()))
 
     for row in result.fetchall():
-        categories.append((row[0], abs(row[1] / 100)))
+        categories.append((row[0], to_dollars(row[1]), abs(to_dollars(row[2])), to_dollars(row[3])))
 
     return categories
 
@@ -76,9 +81,9 @@ def get_categories(year, month):
 def index():
     now = datetime.now()
 
-    categories = get_categories(now.year, now.month)
-    transactions = get_transactions(now.year, now.month)
-    return render_template('index.html', month=now.month, categories=categories, transactions=transactions)
+    categories = get_categories(now.year, 3)
+    transactions = get_transactions(now.year, 3)
+    return render_template('index.html', month=3, categories=categories, transactions=transactions)
 
 @auth.verify_password
 def verify_password(username, password):

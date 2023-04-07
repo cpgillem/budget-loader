@@ -5,23 +5,28 @@
     <title>Budget Tracker</title>
 </head>
 <body>
-    <h1>Categories View</h1>
-    <h2>{{ month }}</h2>
+    <h1>Budget Tracker</h1>
+    <i>Month: {{ month }}</i>
+
+    <h2>Category View</h2>
     <table>
         <tr>
             <th>Category</th>
+            <th>Budgeted</th>
             <th>Total</th>
+            <th>Leftover</th>
         </tr>
         {% for category in categories %}
             <tr>
                 <td>{{ category[0] }}</td>
                 <td>{{ category[1] }}</td>
+                <td>{{ category[2] }}</td>
+                <td>{{ category[3] }}</td>
             </tr>
         {% endfor %}
     </table>
 
-    <h1>Transactions View</h1>
-    <h2>{{ month }}</h2>
+    <h2>Transactions View</h2>
     <table>
         <tr>
             <th>Date</th>
