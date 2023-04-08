@@ -1,8 +1,8 @@
-activate:
-	. venv/bin/activate
+build:
+	cp node_modules/bootstrap/dist/css/bootstrap.css budgetloader/static/bootstrap.css
 
-server_debug: activate
-	flask --app src/server run --debug
+debug: build
+	venv/bin/flask --app budgetloader run --debug --port=5009
 
-server: activate
-	gunicorn --bind 127.0.0.1:5009 wsgi:app
+server: build
+	venv/bin/gunicorn --bind 127.0.0.1:5009 wsgi:app

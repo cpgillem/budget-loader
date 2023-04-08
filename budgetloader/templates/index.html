@@ -1,49 +1,74 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta charset="UTF-8" />
     <title>Budget Tracker</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap.css') }}" />
 </head>
+
 <body>
-    <h1>Budget Tracker</h1>
-    <i>Month: {{ month }}</i>
+    <div class="container-lg">
+        <div class="row">
+            <div class="col">
+                <h1>Budget Tracker <small class="text-body-secondary">Month: {{ month }}</small></h1>
+            </div>
+        </div>
 
-    <h2>Category View</h2>
-    <table>
-        <tr>
-            <th>Category</th>
-            <th>Budgeted</th>
-            <th>Total</th>
-            <th>Leftover</th>
-        </tr>
-        {% for category in categories %}
-            <tr>
-                <td>{{ category[0] }}</td>
-                <td>{{ category[1] }}</td>
-                <td>{{ category[2] }}</td>
-                <td>{{ category[3] }}</td>
-            </tr>
-        {% endfor %}
-    </table>
+        <div class="row">
+            <div class="col">
+                <h2>Category View</h2>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Category</th>
+                            <th>Budgeted</th>
+                            <th>Total</th>
+                            <th>Leftover</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for category in categories %}
+                            <tr>
+                                <td>{{ category[0] }}</td>
+                                <td>{{ category[1] }}</td>
+                                <td>{{ category[2] }}</td>
+                                <td>{{ category[3] }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
 
-    <h2>Transactions View</h2>
-    <table>
-        <tr>
-            <th>Date</th>
-            <th>Check No.</th>
-            <th>Description</th>
-            <th>Amount</th>
-            <th>Category</th>
-        </tr>
-        {% for transaction in transactions %}
-            <tr>
-                <td>{{ transaction[0] }}</td>
-                <td>{{ transaction[1] }}</td>
-                <td>{{ transaction[2] }}</td>
-                <td>{{ transaction[3] }}</td>
-                <td>{{ transaction[4] }}</td>
-            </tr>
-        {% endfor %}
-    </table>
+        <div class="row">
+            <div class="col">
+                <h2>Transactions View</h2>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Check No.</th>
+                            <th>Description</th>
+                            <th>Amount</th>
+                            <th>Category</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for transaction in transactions %}
+                            <tr>
+                                <td>{{ transaction[0] }}</td>
+                                <td>{{ transaction[1] }}</td>
+                                <td>{{ transaction[2] }}</td>
+                                <td>{{ transaction[3] }}</td>
+                                <td>{{ transaction[4] }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 </body>
+
 </html>

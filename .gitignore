@@ -4,3 +4,7 @@ data
 **/__pycache__
 venv
 hash.txt
+node_modules
+
+# Build products
+budgetloader/static/bootstrap.css

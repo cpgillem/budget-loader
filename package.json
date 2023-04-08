@@ -1,0 +1,23 @@
+{
+  "name": "budget-loader",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "private": true,
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cpgillem/budget-loader.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/cpgillem/budget-loader/issues"
+  },
+  "homepage": "https://github.com/cpgillem/budget-loader#readme",
+  "dependencies": {
+    "bootstrap": "^5.2.3"
+  }
+}
