@@ -1,6 +1,6 @@
 import sqlite3
 from datetime import datetime, date, time
-from budgetloader.util import to_dollars, get_start_end
+from budgetloader import util
 
 # Get a database connection.
 def connect_db():
@@ -15,7 +15,7 @@ def get_transactions(year, month):
     cursor = connection.cursor()
 
     # Calculate dates
-    (start, end) = get_start_end(year, month)
+    (start, end) = util.get_start_end(year, month)
 
     # Query transactions
     result = cursor.execute("""
@@ -41,18 +41,24 @@ def get_categories(year, month):
     cursor = connection.cursor()
 
     # Calculate dates
-    (start, end) = get_start_end(year, month)
+    (start, end) = util.get_start_end(year, month)
 
     # Query and sum up categories
     result = cursor.execute("""
-        SELECT category.name, category.budget, SUM(`transaction`.amount), COALESCE(category.budget, 0) + SUM(`transaction`.amount), category.rowid
+        SELECT category.name, category.budget, SUM(COALESCE(`transaction`.amount, 0)), COALESCE(category.budget, 0) + SUM(COALESCE(`transaction`.amount, 0)), category.rowid
         FROM category
             LEFT JOIN `transaction` ON category.rowid = `transaction`.category_id AND `transaction`.timestamp BETWEEN ? AND ?
         GROUP BY category.name
     """, (start.timestamp(), end.timestamp()))
 
     for row in result.fetchall():
-        categories.append({"id": row[4], "name": row[0], "budget": abs(to_dollars(row[1])), "total": abs(to_dollars(row[2])), "leftover": to_dollars(row[3])})
+        categories.append({
+            "id": row[4], 
+            "name": row[0], 
+            "budget": row[1], 
+            "total": row[2], 
+            "leftover": row[3]
+        })
 
     return categories
 
@@ -64,9 +70,30 @@ def get_category(id):
         SELECT rowid, name, budget FROM category WHERE rowid = ?
     """, (id,))
 
-    rows = result.fetchall()
-    if len(rows) == 1:
-        row = rows[0]
+    row = result.fetchone()
+    if not row is None:
         return {"id": row[0], "name": row[1], "budget": row[2]}
     else:
         return None
+
+def save_category(category):
+    connection = connect_db()
+    cursor = connection.cursor()
+
+    # Check category existence.
+    # if cursor.execute("SELECT rowid FROM category WHERE rowid = ?", (category["id"],)).fetchone() is None:
+    if category["id"] is None:
+        # If it doesn't exist, create it.
+        cursor.execute("""
+            INSERT INTO category (name, budget)
+            VALUES (?, ?)
+        """, category["name"], util.to_cents(category["budget"]))
+    else:
+        # If it does exist, update it.
+        cursor.execute("""
+            UPDATE category
+            SET name = ?, budget = ?
+            WHERE rowid = ?
+        """, (category["name"], util.to_cents(category["budget"]), category["id"]))
+    
+    connection.commit()

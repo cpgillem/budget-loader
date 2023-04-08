@@ -10,21 +10,28 @@
                         <th>Actions</th>
                         <th>Category</th>
                         <th>Budgeted</th>
-                        <th>Total</th>
+                        <th>Net Spending</th>
                         <th>Leftover</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {% for category in categories %}
                     <tr>
-                        <td>
-                            <a href="category/{{ category.id }}/edit" class="link-primary">Edit</a> 
-                        </td>
-                        <td>{{ category["name"] }}</td>
-                        <td>{{ category["budget"] }}</td>
-                        <td>{{ category["total"] }}</td>
-                        <td>{{ category["leftover"] }}</td>
+                        <th></th>
+                        <th>Totals</th>
+                        <th>{{ total_budget }}</th>
+                        <th>{{ total_spent }}</th>
+                        <th>{{ total_leftover }}</th>
                     </tr>
+                    {% for category in categories %}
+                        <tr>
+                            <td>
+                                <a href="category/{{ category.id }}/edit" class="link-primary">Edit</a> 
+                            </td>
+                            <td>{{ category["name"] }}</td>
+                            <td>{{ category["budget"] }}</td>
+                            <td>{{ category["total"] }}</td>
+                            <td>{{ category["leftover"] }}</td>
+                        </tr>
                     {% endfor %}
                 </tbody>
             </table>

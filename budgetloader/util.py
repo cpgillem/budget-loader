@@ -1,11 +1,19 @@
 from dateutil import relativedelta
 from datetime import datetime, date, time
 
+# Convert cents to dollhairs for display purposes.
 def to_dollars(cents):
     if cents is None:
         return 0
     else:
-        return cents / 100
+        return round(cents / 100, 2)
+
+# Convert to cents for more accurate storage.
+def to_cents(dollars):
+    if dollars is None:
+        return 0
+    else:
+        return int(float(dollars) * 100)
 
 # Get start and end dates.
 def get_start_end(year, month):
