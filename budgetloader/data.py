@@ -52,6 +52,6 @@ def get_categories(year, month):
     """, (start.timestamp(), end.timestamp()))
 
     for row in result.fetchall():
-        categories.append((row[0], to_dollars(row[1]), abs(to_dollars(row[2])), to_dollars(row[3])))
+        categories.append((row[0], abs(to_dollars(row[1])), abs(to_dollars(row[2])), to_dollars(row[3])))
 
     return categories
