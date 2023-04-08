@@ -7,6 +7,7 @@
             <table class="table">
                 <thead>
                     <tr>
+                        <th>Actions</th>
                         <th>Category</th>
                         <th>Budgeted</th>
                         <th>Total</th>
@@ -16,6 +17,9 @@
                 <tbody>
                     {% for category in categories %}
                     <tr>
+                        <td>
+                            <a href="category/{{ category.id }}/edit" class="link-primary">Edit</a> 
+                        </td>
                         <td>{{ category["name"] }}</td>
                         <td>{{ category["budget"] }}</td>
                         <td>{{ category["total"] }}</td>
