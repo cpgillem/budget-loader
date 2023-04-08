@@ -16,10 +16,10 @@
                 <tbody>
                     {% for category in categories %}
                     <tr>
-                        <td>{{ category[0] }}</td>
-                        <td>{{ category[1] }}</td>
-                        <td>{{ category[2] }}</td>
-                        <td>{{ category[3] }}</td>
+                        <td>{{ category["name"] }}</td>
+                        <td>{{ category["budget"] }}</td>
+                        <td>{{ category["total"] }}</td>
+                        <td>{{ category["leftover"] }}</td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -43,11 +43,11 @@
                 <tbody>
                     {% for transaction in transactions %}
                     <tr>
-                        <td>{{ transaction[0] }}</td>
-                        <td>{{ transaction[1] }}</td>
-                        <td>{{ transaction[2] }}</td>
-                        <td>{{ transaction[3] }}</td>
-                        <td>{{ transaction[4] }}</td>
+                        <td>{{ transaction["date"] }}</td>
+                        <td>{{ transaction["num"] }}</td>
+                        <td>{{ transaction["description"] }}</td>
+                        <td>{{ transaction["amount"] }}</td>
+                        <td>{{ transaction["category"] }}</td>
                     </tr>
                     {% endfor %}
                 </tbody>

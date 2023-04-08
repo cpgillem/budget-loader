@@ -28,7 +28,7 @@ def get_transactions(year, month):
 
     for row in result.fetchall():
         tx_date = datetime.fromtimestamp(row[0])
-        transactions.append((tx_date.strftime("%Y-%m-%d"), row[1], row[2], row[3] / 100, row[4]))
+        transactions.append({"date": tx_date.strftime("%Y-%m-%d"), "num": row[1], "description": row[2], "amount": row[3] / 100, "category": row[4]})
 
     return transactions
 
@@ -52,6 +52,6 @@ def get_categories(year, month):
     """, (start.timestamp(), end.timestamp()))
 
     for row in result.fetchall():
-        categories.append((row[0], abs(to_dollars(row[1])), abs(to_dollars(row[2])), to_dollars(row[3])))
+        categories.append({"name": row[0], "budget": abs(to_dollars(row[1])), "total": abs(to_dollars(row[2])), "leftover": to_dollars(row[3])})
 
     return categories
