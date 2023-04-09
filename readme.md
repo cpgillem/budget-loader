@@ -6,3 +6,4 @@
 1. Create database db.sqlite3
 1. `npm install`
 1. Install python dependencies
+1. Ensure permissions to upload to data/
