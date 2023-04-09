@@ -1,5 +1,5 @@
 import sqlite3
-from datetime import datetime, date, time
+from datetime import datetime
 from budgetloader import util
 
 # Get a database connection.
@@ -19,16 +19,25 @@ def get_transactions(year, month):
 
     # Query transactions
     result = cursor.execute("""
-        SELECT timestamp, num, description, amount, category.name, `transaction`.rowid
+        SELECT timestamp, num, description, amount, category.name, `transaction`.rowid, account.name
         FROM `transaction`
             JOIN category ON `transaction`.category_id = category.rowid
+            JOIN account ON `transaction`.account_id = account.rowid
         WHERE `transaction`.timestamp BETWEEN ? AND ?
         ORDER BY timestamp DESC
     """, (start.timestamp(), end.timestamp()))
 
     for row in result.fetchall():
         tx_date = datetime.fromtimestamp(row[0])
-        transactions.append({"id": row[5], "date": tx_date.strftime("%Y-%m-%d"), "num": row[1], "description": row[2], "amount": row[3] / 100, "category": row[4]})
+        transactions.append({
+            "id": row[5], 
+            "date": tx_date.strftime("%Y-%m-%d"), 
+            "num": row[1], 
+            "description": row[2], 
+            "amount": row[3] / 100, 
+            "category": row[4],
+            "account": row[6],
+        })
 
     return transactions
 

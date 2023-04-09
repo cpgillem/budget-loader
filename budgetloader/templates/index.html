@@ -44,6 +44,7 @@
             <table class="table">
                 <thead>
                     <tr>
+                        <th>Account</th>
                         <th>Date</th>
                         <th>Check No.</th>
                         <th>Description</th>
@@ -54,6 +55,7 @@
                 <tbody>
                     {% for transaction in transactions %}
                     <tr>
+                        <td>{{ transaction["account"] }}</td>
                         <td>{{ transaction["date"] }}</td>
                         <td>{{ transaction["num"] }}</td>
                         <td>{{ transaction["description"] }}</td>
