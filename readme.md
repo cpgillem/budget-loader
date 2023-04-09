@@ -7,3 +7,4 @@
 1. `npm install`
 1. Install python dependencies
 1. Ensure permissions to upload to data/
+1. Install and enable budget-loader.service
