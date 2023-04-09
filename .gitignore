@@ -5,6 +5,7 @@ data
 venv
 hash.txt
 node_modules
+.env
 
 # Build products
 budgetloader/static/bootstrap.*

@@ -1,8 +1,9 @@
 from flask import Flask, render_template, request, redirect, url_for
 from datetime import datetime, date, time
 from flask_httpauth import HTTPBasicAuth
-from werkzeug.security import generate_password_hash, check_password_hash
-from budgetloader import data, util
+from werkzeug.security import check_password_hash
+from werkzeug.utils import secure_filename
+from budgetloader import data, util, extraction
 import os
 
 def create_app():
@@ -53,6 +54,7 @@ def create_app():
             return ""
         
     @app.route("/category/<int:id>", methods=["POST"])
+    @auth.login_required
     def update_category(id):
         category = {
             "id": id,
@@ -61,6 +63,30 @@ def create_app():
         }
         data.save_category(category)
         return redirect(url_for('index'))
+
+    @app.route("/import", methods=["GET", "POST"])
+    @auth.login_required
+    def import_file():
+        if request.method == "GET":
+            return render_template('import.html')
+        elif request.method == "POST":
+            # Retrieve and save the file.
+            file = request.files['upload']
+            filename = secure_filename(file.filename)
+            path = os.path.join(os.environ['BL_UPLOAD_PATH'], filename)
+            
+            # Check existence.
+            if os.path.exists(path):
+                return redirect(url_for('import_file'))
+            
+            # Import the file.
+            file.save(path)
+            result = extraction.load_file(path)
+            if result != "":
+                return redirect(url_for('import_file'))
+            
+            # Going back to the home page means success.
+            return redirect(url_for('index'))
 
     return app
 
