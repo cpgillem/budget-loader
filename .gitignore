@@ -7,4 +7,4 @@ hash.txt
 node_modules
 
 # Build products
-budgetloader/static/bootstrap.css
+budgetloader/static/bootstrap.*
