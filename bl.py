@@ -44,3 +44,10 @@ for arg in sys.argv:
 # Load the data from the file, normalize it, and save it.
 if len(path) > 0:
     print(extraction.load_file(path))
+
+# TODO: 
+# - File upload
+# - Organize routes
+# - Transaction editing/adding manually
+# - Sinking funds/longer term budgets
+# - Carry-over budgets

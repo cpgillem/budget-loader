@@ -127,8 +127,3 @@ def load_file(path):
     loader(account["id"], path)
 
     return ""
-
-# TODO:
-# - regex detection for account and format on filenames
-# - cron job to load automatically
-# - budget setting features
