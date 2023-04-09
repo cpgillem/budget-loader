@@ -1,4 +1,4 @@
-from budgetloader import extraction
+from budgetloader import extraction, data
 import sys
 from werkzeug.security import generate_password_hash
 import sqlite3
@@ -34,8 +34,11 @@ for arg in sys.argv:
     elif arg == "--update-categories":
         extraction.update_categories()
         print("Categories recalculated.")
+    elif arg == "--deduplicate":
+        data.deduplicate_transactions()
+        print("Duplicates removed.")
     elif arg.startswith("--password"):
-        extraction.reset_password(arg[11:])
+        reset_password(arg[11:])
         print("Password reset.")
 
 # Load the data from the file, normalize it, and save it.

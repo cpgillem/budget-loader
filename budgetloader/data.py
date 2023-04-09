@@ -106,3 +106,25 @@ def save_category(category):
         """, (category["name"], util.to_cents(category["budget"]), category["id"]))
     
     connection.commit()
+
+# Checks for duplicate transactions and removes the one with the lower ID.
+def deduplicate_transactions():
+    connection = connect_db()
+    cursor = connection.cursor()
+
+    # Find the duplicates
+    duplicates = cursor.execute("""
+        SELECT MIN(rowid), timestamp, num, description, amount, account_id
+        FROM `transaction`
+        GROUP BY timestamp, num, description, amount, account_id
+        HAVING count(*) > 1
+    """).fetchall()
+
+    # Delete the duplicates
+    for duplicate in duplicates:
+        cursor.execute("""
+            DELETE FROM `transaction`
+            WHERE rowid = ?
+        """, (duplicate[0],))
+    
+    connection.commit()
