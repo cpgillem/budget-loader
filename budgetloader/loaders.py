@@ -17,7 +17,8 @@ def omni(account_id, path):
             if row["Credit or Debit"] == "Debit":
                 amount = -amount
             category_id = extraction.lookup_category(description)
-            extraction.insert_transaction(timestamp, num, description, amount, category_id, account_id)
+            result = extraction.insert_transaction(timestamp, num, description, amount, category_id, account_id)
+            print(result)
 
 def discover(account_id, path):
     with open(path, newline='') as csvfile:

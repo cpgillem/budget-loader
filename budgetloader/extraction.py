@@ -52,14 +52,25 @@ def insert_transaction(timestamp, num, description, amount, category_id, account
     # SQLite connection
     connection = sqlite3.connect("db.sqlite3")
     cursor = connection.cursor()
+    
     params = (timestamp, num, description, amount, category_id, account_id)
-    existing = cursor.execute("SELECT timestamp, num, description, amount, account_id FROM `transaction`").fetchall()
+    existing = cursor.execute("""
+        SELECT timestamp, num, description, amount, category_id, account_id 
+        FROM `transaction`
+        WHERE timestamp = ?
+            AND num = ?
+            AND description = ?
+            AND amount = ?
+            AND category_id = ?
+            AND account_id = ?
+    """, params).fetchall()
+
     if len(existing) == 0:
         cursor.execute("INSERT INTO `transaction` (timestamp, num, description, amount, category_id, account_id) VALUES (?, ?, ?, ?, ?, ?)", params)
         connection.commit()
         return ""
     else:
-        return "Duplicate detected."
+        return "Duplicate detected"
 
 def load_categories():
     # SQLite connection

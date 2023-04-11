@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% block content %}
-    <form action="/import" method="post">
+    <form action="/import" method="post" enctype="multipart/form-data">
         <div class="mb-3">
             <label for="upload" class="form-label">File to import:</label>
             <input type="file" class="form-control" name="upload" accept="text/csv"/>

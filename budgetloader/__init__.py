@@ -24,15 +24,23 @@ def create_app():
     @app.route("/")
     @auth.login_required
     def index():
-        now = datetime.now()
+        # Set the year and month.
+        if not request.args.get("year") is None:
+            year = int(request.args["year"])
+        else:
+            year = datetime.now().year
 
-        categories = data.get_categories(now.year, 4)
-        transactions = data.get_transactions(now.year, 4)
+        if not request.args.get("month") is None:
+            month = int(request.args["month"])
+        else:
+            month = datetime.now().month
+
+        # Retrieve the set month's totals and transactions.
+        categories = data.get_categories(year, month)
+        transactions = data.get_transactions(year, month)
 
         total_budget = sum(map(lambda cat: cat["budget"], categories))
         total_spent = sum(map(lambda cat: cat["total"], categories))
-        # total_leftover = sum(map(lambda cat: cat["leftover"], categories))
-        # total_leftover = total_budget - total_spent
 
         display_categories = map(lambda cat: {
             "id": cat["id"], 
@@ -76,8 +84,8 @@ def create_app():
             path = os.path.join(os.environ['BL_UPLOAD_PATH'], filename)
             
             # Check existence.
-            if os.path.exists(path):
-                return redirect(url_for('import_file'))
+            # if os.path.exists(path):
+            #     return redirect(url_for('import_file'))
             
             # Import the file.
             file.save(path)
