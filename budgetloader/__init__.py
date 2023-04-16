@@ -93,15 +93,13 @@ def create_app():
             return redirect(url_for('index'))
 
     # View patterns or create a new pattern.
-    @app.route("/pattern", methods=["GET", "POST"])
+    @app.route("/pattern", methods=["GET"])
     @auth.login_required
     def get_patterns():
-        if request.method == "GET":
-            # Retrieve all patterns
-            patterns = data.get_patterns()
-            return render_template('pattern.html', patterns=patterns)
-        elif request.method == "POST":
-            return redirect(url_for('index')) # TEMP
+        # Retrieve all patterns
+        patterns = data.get_patterns()
+        categories = data.get_all_categories()
+        return render_template('pattern.html', patterns=patterns, categories=categories)
 
     # Edit a pattern.
     @app.route("/pattern/<int:id>/edit", methods=["GET"])
@@ -120,6 +118,18 @@ def create_app():
     def update_pattern(id):
         pattern = {
             "id": id,
+            "regex": request.form["regex"],
+            "category_id": request.form["category_id"],
+            "precedence": request.form["precedence"],
+        }
+        data.save_pattern(pattern)
+        return redirect(url_for('get_patterns'))
+
+    @app.route("/pattern", methods=["POST"])
+    @auth.login_required
+    def add_pattern():
+        pattern = {
+            "id": None, # This will create one.
             "regex": request.form["regex"],
             "category_id": request.form["category_id"],
             "precedence": request.form["precedence"],

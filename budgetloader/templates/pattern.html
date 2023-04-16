@@ -2,6 +2,28 @@
 {% block content %}
 <div class="row">
     <div class="col">
+        <h2>Add Pattern</h2>
+        <form action="/pattern" method="post">
+            <div class="mb-3">
+                <label for="regex" class="form-label">Regex</label>
+                <input type="text" class="form-control" name="regex"/>
+            </div>
+            <div class="mb-3">
+                <label for="category_id" class="form-label">Category</label>
+                <select class="form-select" name="category_id">
+                    {% for category in categories %}
+                    <option value="{{ category.id }}">
+                        {{ category.name }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="precedence" class="form-label">Precedence</label>
+                <input type="number" class="form-control" name="precedence"/>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
         <h2>Patterns</h2>
         <table class="table">
             <thead>
