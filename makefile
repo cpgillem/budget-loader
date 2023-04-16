@@ -10,5 +10,5 @@ build:
 debug: build
 	venv/bin/flask --app budgetloader run --debug --port=5009
 
-server: build env
+server: build
 	venv/bin/gunicorn --bind 127.0.0.1:5009 wsgi:app
