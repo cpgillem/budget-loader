@@ -1,7 +1,7 @@
 import sqlite3
 import re
 import os
-from budgetloader import loaders
+from budgetloader import loaders, data
 
 # Run through the regex table until a category is found. There should be a .* pattern for a default if none found.
 def lookup_category(description):
@@ -46,31 +46,6 @@ def update_categories():
         cursor.execute("UPDATE `transaction` SET category_id=? WHERE rowid=?", (new_category_id, row[0]))
     
     connection.commit()
-
-# Inserts a transaction into the database.
-def insert_transaction(timestamp, num, description, amount, category_id, account_id):
-    # SQLite connection
-    connection = sqlite3.connect("db.sqlite3")
-    cursor = connection.cursor()
-    
-    params = (timestamp, num, description, amount, category_id, account_id)
-    existing = cursor.execute("""
-        SELECT timestamp, num, description, amount, category_id, account_id 
-        FROM `transaction`
-        WHERE timestamp = ?
-            AND num = ?
-            AND description = ?
-            AND amount = ?
-            AND category_id = ?
-            AND account_id = ?
-    """, params).fetchall()
-
-    if len(existing) == 0:
-        cursor.execute("INSERT INTO `transaction` (timestamp, num, description, amount, category_id, account_id) VALUES (?, ?, ?, ?, ?, ?)", params)
-        connection.commit()
-        return ""
-    else:
-        return "Duplicate detected"
 
 def load_categories():
     # SQLite connection

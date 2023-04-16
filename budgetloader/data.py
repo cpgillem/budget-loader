@@ -6,6 +6,100 @@ from budgetloader import util
 def connect_db():
     return sqlite3.connect("db.sqlite3")
 
+# Get patterns.
+def get_patterns():
+    patterns = []
+
+    # Connect to DB
+    connection = connect_db()
+    cursor = connection.cursor()
+
+    result = cursor.execute("""
+        SELECT pattern.rowid, pattern.regex, pattern.category_id, pattern.precedence, category.name
+        FROM pattern
+            JOIN category ON pattern.category_id = category.rowid
+        ORDER BY precedence DESC, category_id, regex
+    """)
+
+    for row in result.fetchall():
+        patterns.append({
+            "id": row[0],
+            "regex": row[1],
+            "category_id": row[2],
+            "precedence": row[3],
+            "category_name": row[4],
+        })
+
+    return patterns
+
+# Get all categories on their own.
+def get_all_categories():
+    categories = []
+
+    # Connect to DB
+    connection = connect_db()
+    cursor = connection.cursor()
+
+    result = cursor.execute("""
+        SELECT rowid, name, budget
+        FROM category
+        ORDER BY name
+    """)
+
+    for row in result.fetchall():
+        categories.append({
+            "id": row[0],
+            "name": row[1],
+            "budget": row[2],
+        })
+
+    return categories
+
+def insert_pattern(regex, category_id, precedence):
+    # SQLite connection
+    connection = sqlite3.connect("db.sqlite3")
+    cursor = connection.cursor()
+
+    params = (regex, category_id, precedence)
+
+    cursor.execute("INSERT INTO pattern (regex, category_id, precedence) VALUES (?, ?, ?)", params)
+    connection.commit()
+
+def insert_category(name):
+    # SQLite connection
+    connection = sqlite3.connect("db.sqlite3")
+    cursor = connection.cursor()
+
+    params = (name,)
+
+    cursor.execute("INSERT INTO category (name) VALUES (?)", params)
+    connection.commit()
+
+# Inserts a transaction into the database.
+def insert_transaction(timestamp, num, description, amount, category_id, account_id):
+    # SQLite connection
+    connection = sqlite3.connect("db.sqlite3")
+    cursor = connection.cursor()
+    
+    params = (timestamp, num, description, amount, category_id, account_id)
+    existing = cursor.execute("""
+        SELECT timestamp, num, description, amount, category_id, account_id 
+        FROM `transaction`
+        WHERE timestamp = ?
+            AND num = ?
+            AND description = ?
+            AND amount = ?
+            AND category_id = ?
+            AND account_id = ?
+    """, params).fetchall()
+
+    if len(existing) == 0:
+        cursor.execute("INSERT INTO `transaction` (timestamp, num, description, amount, category_id, account_id) VALUES (?, ?, ?, ?, ?, ?)", params)
+        connection.commit()
+        return ""
+    else:
+        return "Duplicate detected"
+
 # Get the transactions for the given month.
 def get_transactions(year, month):
     transactions = []
@@ -84,6 +178,20 @@ def get_category(id):
         return {"id": row[0], "name": row[1], "budget": row[2]}
     else:
         return None
+    
+def get_pattern(id):
+    connection = connect_db()
+    cursor = connection.cursor()
+    
+    result = cursor.execute("""
+        SELECT rowid, regex, category_id, precedence FROM pattern WHERE rowid = ?
+    """, (id,))
+
+    row = result.fetchone()
+    if not row is None:
+        return {"id": row[0], "regex": row[1], "category_id": row[2], "precedence": row[3]}
+    else:
+        return None
 
 def save_category(category):
     connection = connect_db()
@@ -104,6 +212,24 @@ def save_category(category):
             SET name = ?, budget = ?
             WHERE rowid = ?
         """, (category["name"], util.to_cents(category["budget"]), category["id"]))
+    
+    connection.commit()
+
+def save_pattern(pattern):
+    connection = connect_db()
+    cursor = connection.cursor()
+
+    if pattern["id"] is None:
+        cursor.execute("""
+            INSERT INTO pattern (regex, category_id, precedence)
+            VALUES (?, ?, ?)
+        """, (pattern["regex"], pattern["category_id"], pattern["precedence"]))
+    else:
+        cursor.execute("""
+            UPDATE pattern
+            SET regex = ?, category_id = ?, precedence = ?
+            WHERE rowid = ?
+        """, (pattern["regex"], pattern["category_id"], pattern["precedence"], pattern["id"]))
     
     connection.commit()
 

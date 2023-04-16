@@ -59,7 +59,7 @@ def create_app():
         if not category is None:
             return render_template('edit_category.html', category=category)
         else:
-            return ""
+            return redirect(url_for('index'))
         
     @app.route("/category/<int:id>", methods=["POST"])
     @auth.login_required
@@ -83,10 +83,6 @@ def create_app():
             filename = secure_filename(file.filename)
             path = os.path.join(os.environ['BL_UPLOAD_PATH'], filename)
             
-            # Check existence.
-            # if os.path.exists(path):
-            #     return redirect(url_for('import_file'))
-            
             # Import the file.
             file.save(path)
             result = extraction.load_file(path)
@@ -95,6 +91,41 @@ def create_app():
             
             # Going back to the home page means success.
             return redirect(url_for('index'))
+
+    # View patterns or create a new pattern.
+    @app.route("/pattern", methods=["GET", "POST"])
+    @auth.login_required
+    def get_patterns():
+        if request.method == "GET":
+            # Retrieve all patterns
+            patterns = data.get_patterns()
+            return render_template('pattern.html', patterns=patterns)
+        elif request.method == "POST":
+            return redirect(url_for('index')) # TEMP
+
+    # Edit a pattern.
+    @app.route("/pattern/<int:id>/edit", methods=["GET"])
+    @auth.login_required
+    def edit_pattern(id):
+        pattern = data.get_pattern(id)
+        categories = data.get_all_categories()
+        if not pattern is None:
+            return render_template('edit_pattern.html', pattern=pattern, categories=categories)
+        else:
+            return redirect(url_for('get_patterns'))
+        
+    # Save a pattern.
+    @app.route("/pattern/<int:id>", methods=["POST"])
+    @auth.login_required
+    def update_pattern(id):
+        pattern = {
+            "id": id,
+            "regex": request.form["regex"],
+            "category_id": request.form["category_id"],
+            "precedence": request.form["precedence"],
+        }
+        data.save_pattern(pattern)
+        return redirect(url_for('get_patterns'))
 
     return app
 

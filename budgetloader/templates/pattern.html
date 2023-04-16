@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row">
+    <div class="col">
+        <h2>Patterns</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Actions</th>
+                    <th>Regex</th>
+                    <th>Category</th>
+                    <th>Precedence</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for pattern in patterns %}
+                    <tr>
+                        <td>
+                            <a href="pattern/{{ pattern.id }}/edit" class="link-primary">Edit</a>
+                        </td>
+                        <td>{{ pattern["regex"] }}</td>
+                        <td>{{ pattern["category_name"] }}</td>
+                        <td>{{ pattern["precedence"] }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
