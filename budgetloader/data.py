@@ -148,7 +148,7 @@ def get_categories(year, month):
 
     # Query and sum up categories
     result = cursor.execute("""
-        SELECT category.name, category.budget, SUM(COALESCE(`transaction`.amount, 0)), COALESCE(category.budget, 0) + SUM(COALESCE(`transaction`.amount, 0)), category.rowid
+        SELECT category.name, category.budget, SUM(COALESCE(`transaction`.amount, 0)), (-COALESCE(category.budget, 0)) + SUM(COALESCE(`transaction`.amount, 0)), category.rowid
         FROM category
             LEFT JOIN `transaction` ON category.rowid = `transaction`.category_id AND `transaction`.timestamp BETWEEN ? AND ?
         GROUP BY category.name

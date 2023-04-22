@@ -39,8 +39,9 @@ def create_app():
         categories = data.get_categories(year, month)
         transactions = data.get_transactions(year, month)
 
-        total_budget = sum(map(lambda cat: cat["budget"], categories))
+        budget_surplus = sum(map(lambda cat: cat["budget"], categories))
         total_spent = sum(map(lambda cat: cat["total"], categories))
+        total_leftover = sum(map(lambda cat: cat["leftover"], categories))
 
         display_categories = map(lambda cat: {
             "id": cat["id"], 
@@ -49,7 +50,7 @@ def create_app():
             "total": abs(util.to_dollars(cat["total"])), 
             "leftover": util.to_dollars(cat["leftover"])
         }, categories)
-        return render_template('index.html', month=4, categories=display_categories, transactions=transactions, total_budget=util.to_dollars(total_budget), total_spent=util.to_dollars(total_spent))
+        return render_template('index.html', month=4, categories=display_categories, transactions=transactions, budget_surplus=util.to_dollars(budget_surplus), total_spent=-util.to_dollars(total_spent), total_leftover=util.to_dollars(total_leftover))
 
     @app.route("/category/<int:id>/edit")
     @auth.login_required
