@@ -10,7 +10,7 @@
             <select class="form-select" name="category_id">
                 {% for category in categories %}
                     <option value="{{ category.id }}" 
-                        {% if category.id == pattern.id %}
+                        {% if category.id == pattern.category_id %}
                             selected
                         {% endif %}>
                         {{ category.name }}

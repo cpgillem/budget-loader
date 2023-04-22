@@ -44,6 +44,7 @@
             <table class="table">
                 <thead>
                     <tr>
+                        <th>Actions</th>
                         <th>Account</th>
                         <th>Date</th>
                         <th>Check No.</th>
@@ -55,6 +56,7 @@
                 <tbody>
                     {% for transaction in transactions %}
                     <tr>
+                        <td><a href="transaction/{{ transaction.id }}/edit" class="link-primary">Edit</a></td>
                         <td>{{ transaction["account"] }}</td>
                         <td>{{ transaction["date"] }}</td>
                         <td>{{ transaction["num"] }}</td>

@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block content %}
+    <form action="/transaction/{{ transaction.id }}" method="post">
+        <div class="mb-3">
+            <label for="num" class="form-label">Check No.</label>
+            <input type="text" class="form-control" id="num" name="num" value="{{ transaction.num }}"/>
+        </div>
+        <div class="mb-3">
+            <label for="description" class="form-label">Description</label>
+            <input type="text" class="form-control" id="description" name="description" value="{{ transaction.description }}"/>
+        </div>
+        <div class="mb-3">
+            <label for="amount" class="form-label">Amount</label>
+            <input type="number" class="form-control" id="amount" name="amount" value="{{ transaction.amount }}"/>
+        </div>
+        <div class="mb-3">
+            <label for="category_id" class="form-label">Category</label>
+            <select class="form-select" name="category_id">
+                {% for category in categories %}
+                    <option value="{{ category.id }}" 
+                        {% if category.id == transaction.category_id %}
+                            selected
+                        {% endif %}>
+                        {{ category.name }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="mb-3 form-check">
+            <input type="checkbox" class="form-check-input" id="category_override" name="category_override" checked/>
+            <label class="form-check-label" for="category_override">Override Recategorization</label>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+{% endblock %}

@@ -68,7 +68,7 @@ def create_app():
         category = {
             "id": id,
             "name": request.form["name"],
-            "budget": request.form["budget"],
+            "budget": util.to_cents(request.form["budget"]),
         }
         data.save_category(category)
         return redirect(url_for('index'))
@@ -112,6 +112,17 @@ def create_app():
             return render_template('edit_pattern.html', pattern=pattern, categories=categories)
         else:
             return redirect(url_for('get_patterns'))
+
+    @app.route("/transaction/<int:id>/edit", methods=["GET"])
+    @auth.login_required
+    def edit_transaction(id):
+        categories = data.get_all_categories()
+        transaction = data.get_transaction(id)
+        transaction["amount"] = util.to_dollars(transaction["amount"])
+        if not transaction is None:
+            return render_template('edit_transaction.html', transaction=transaction, categories=categories)
+        else:
+            return redirect(url_for('index'))
         
     # Save a pattern.
     @app.route("/pattern/<int:id>", methods=["POST"])
@@ -125,6 +136,20 @@ def create_app():
         }
         data.save_pattern(pattern)
         return redirect(url_for('get_patterns'))
+    
+    @app.route("/transaction/<int:id>", methods=["POST"])
+    @auth.login_required
+    def update_transaction(id):
+        transaction = {
+            "id": id,
+            "num": request.form["num"],
+            "description": request.form["description"],
+            "category_id": request.form["category_id"],
+            "amount": util.to_cents(request.form["amount"]),
+            "category_override": request.form.get("category_override"),
+        }
+        data.save_transaction(transaction)
+        return redirect(url_for('index'))
 
     @app.route("/pattern", methods=["POST"])
     @auth.login_required

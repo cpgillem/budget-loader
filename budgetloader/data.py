@@ -193,6 +193,36 @@ def get_pattern(id):
     else:
         return None
 
+def get_transaction(id):
+    connection = connect_db()
+    cursor = connection.cursor()
+    
+    result = cursor.execute("""
+        SELECT T.rowid, timestamp, num, description, amount, category_id, category.name, account_id, account.name, category_override
+        FROM `transaction` AS T
+            JOIN category ON T.category_id = category.rowid
+            JOIN account ON T.account_id = account.rowid
+        WHERE T.rowid = ?
+    """, (id,))
+
+    row = result.fetchone()
+
+    if not row is None:
+        return {
+            "id": row[0],
+            "timestamp": row[1],
+            "num": row[2],
+            "description": row[3],
+            "amount": row[4],
+            "category_id": row[5],
+            "category_name": row[6],
+            "account_id": row[7],
+            "account_name": row[8],
+            "category_override": row[9],
+        }
+    else:
+        return None
+
 def save_category(category):
     connection = connect_db()
     cursor = connection.cursor()
@@ -204,14 +234,14 @@ def save_category(category):
         cursor.execute("""
             INSERT INTO category (name, budget)
             VALUES (?, ?)
-        """, category["name"], util.to_cents(category["budget"]))
+        """, category["name"], category["budget"])
     else:
         # If it does exist, update it.
         cursor.execute("""
             UPDATE category
             SET name = ?, budget = ?
             WHERE rowid = ?
-        """, (category["name"], util.to_cents(category["budget"]), category["id"]))
+        """, (category["name"], category["budget"], category["id"]))
     
     connection.commit()
 
@@ -231,6 +261,19 @@ def save_pattern(pattern):
             WHERE rowid = ?
         """, (pattern["regex"], pattern["category_id"], pattern["precedence"], pattern["id"]))
     
+    connection.commit()
+
+def save_transaction(transaction):
+    connection = connect_db()
+    cursor = connection.cursor()
+
+    if not transaction["id"] is None:
+        cursor.execute("""
+            UPDATE `transaction`
+            SET num = ?, description = ?, amount = ?, category_id = ?, category_override = ?
+            WHERE rowid = ?
+        """, (transaction["num"], transaction["description"], transaction["amount"], transaction["category_id"], transaction["category_override"], transaction["id"]))
+
     connection.commit()
 
 # Checks for duplicate transactions and removes the one with the lower ID.
